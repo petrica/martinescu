@@ -13,6 +13,9 @@ theme = "hugo-coder"
 
     colorscheme = "dark"
 
+    favicon_32 = false
+    favicon_16 = false
+
 # Social links
 [[params.social]]
     name = "Github"
