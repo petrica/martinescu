@@ -1,6 +1,6 @@
 baseURL = "https://www.martinescu.com/"
 languageCode = "en-us"
-title = "Martinescu"
+title = "Petrica Martinescu - Engineer, Solution Architect"
 theme = "hugo-coder"
 
 [params]
