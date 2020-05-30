@@ -4,6 +4,8 @@ date: 2020-04-15T20:49:27+03:00
 draft: true
 ---
 
+![Unshaky Intro](/images/unshaky/intro.jpg)
+
 ## Introduction
 If you have a mac with a butterfly keyboard, you most probably already know and have experience the most common issue that comes with it: doubling of the pressed keys.
 
@@ -32,8 +34,7 @@ Coming back to Unshaky, I was able to make this work for me by following these s
 3. For any new shaky key that did not make the top initially, set a 70ms delay. 
 4. Rinse and repeat step 3.
 
-![Shaky Stats](/images/unshaky/unshaky-stats.png)
-![Shaky Stats](/images/unshaky/unshaky-config.png)
+![Unshaky Intro](/images/unshaky/stats.jpg)
 
 That's it. Enjoy your keyboard for a few more... months probably.
 
