@@ -2,6 +2,7 @@ baseURL = "https://www.martinescu.com/"
 languageCode = "en-us"
 title = "Petrica Martinescu - Engineer, Solution Architect"
 theme = "hugo-coder"
+googleAnalytics = "UA-1491698-2"
 
 [params]
     author = "Petrică Martinescu"
