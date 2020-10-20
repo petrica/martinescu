@@ -3,6 +3,7 @@ languageCode = "en-us"
 title = "Petrica Martinescu - Engineer, Solution Architect"
 theme = "hugo-coder"
 googleAnalytics = "UA-1491698-2"
+disqusShortname = "martinescu"
 
 [params]
     author = "Petrică Martinescu"
