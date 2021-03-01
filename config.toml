@@ -4,6 +4,7 @@ title = "Petrica Martinescu - Engineer, Solution Architect"
 theme = "hugo-coder"
 googleAnalytics = "UA-1491698-2"
 disqusShortname = "martinescu"
+canonifyurls = true
 
 [params]
     author = "Petrică Martinescu"
@@ -13,25 +14,27 @@ disqusShortname = "martinescu"
     hidecredits = true
     hidecopyright = true
 
-    colorscheme = "dark"
+    colorscheme = "light"
 
     favicon_32 = false
     favicon_16 = false
 
+    customCSS = ["css/style.css"]
+
 # Social links
 [[params.social]]
     name = "Github"
-    icon = "fab fa-github fa-2x"
     weight = 1
+    icon = "fa fa-github"
     url = "https://github.com/petrica/"
 [[params.social]]
     name = "Twitter"
-    icon = "fab fa-twitter fa-2x"
+    icon = "fa fa-twitter"
     weight = 3
     url = "https://twitter.com/martinescu/"
 [[params.social]]
     name = "LinkedIn"
-    icon = "fab fa-linkedin"
+    icon = "fa fa-linkedin"
     weight = 4
     url = "https://www.linkedin.com/in/petrica-martinescu"
 
