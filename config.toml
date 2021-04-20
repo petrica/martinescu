@@ -6,6 +6,9 @@ googleAnalytics = "UA-1491698-2"
 disqusShortname = "martinescu"
 canonifyurls = true
 
+[markup.goldmark.renderer]
+unsafe= true
+
 [params]
     author = "Petrică Martinescu"
     info = "Engineer"

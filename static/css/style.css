@@ -1,1 +1,36 @@
-/* img[src$='#right'] { float:right;} */
+.small img {
+    width: 60%;
+    margin: 0 auto;
+    display: block;
+}
+
+table {
+    margin: 0 auto; 
+}
+
+table td {
+    text-align: center;
+}
+
+table.left {
+    margin: 0;
+}
+
+table.noborders td, table.noborders th {
+    border: none;
+}
+
+table.noborders th {
+    text-align: right;
+    padding: 0.3em;
+}
+
+table.noborders td {
+    text-align: left;
+    padding: 0.3em;
+}
+
+table#calculator tr.result td {
+    border: 2px solid;
+}
+
