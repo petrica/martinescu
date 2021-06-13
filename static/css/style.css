@@ -34,3 +34,9 @@ table#calculator tr.result td {
     border: 2px solid;
 }
 
+/* Typography */
+.content article p {
+    hyphens: none;
+    text-align: left;
+}
+
