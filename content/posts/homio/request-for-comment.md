@@ -87,7 +87,7 @@ For the MultiCeiver situation, the **nRF Hub** will listen to multiple addresses
 <script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-multi-nrf-diagram.drawio"></script>
 
 When **nRF Hub** needs to initiate the communication, the situation described previously between two chips applies. The **nRF Hub** simply sets the TX address to one of the child nRF devices and
-configures one of the pipes to listens to the same child address for the ACK packet. Usually the pipe indexed 0 is used for this particular purpose, living out 5 more pipes for active listening from 5 other devices.
+one of the pipes to listen to the same TX address for the ACK packet. Usually the pipe with the 0 index is used for receiving ACK packets from children, leaving out 5 more pipes for active listening from 5 other devices.
 
 ## Homio Communication Protocol
 
@@ -101,6 +101,10 @@ In order for a device to send data to the Homio Hub, it will need to ask the Hub
 This means that multiple devices will use the same address to send their request packet to the Hub and get back the ACK packet containing the available pipe address that they can use to privately talk to the Hub.
 With this approach there are a few issues. Let's see what those issues are and how we can mitigate them:
 * there is a good chance that the ACK packet will be received by all devices that sent the request for a communication pipe. This is because all devices are listening to the same address (main hub address) for the ACK packet.
-When this happens 
+When this happens the Hub actually processed only one of the requests in the background, such that the ACK will contain the ID of the device that got the permission to talk to the Hub. The Hub acts as a referee.
+* there is a good change that packets might clash
+
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;https://app.diagrams.net/#Hpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-pipe-request-diagram&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/petrica/martinescu/master/static/diagrams/homio-pipe-request-diagram&quot;}"></div>
+<script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-pipe-request-diagram"></script>
 
 
