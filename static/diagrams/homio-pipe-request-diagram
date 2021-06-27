@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-06-27T16:54:06.492Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="R0JbJDJ_IGrSsAjc6FZm" version="14.8.1" type="github">
+<mxfile host="app.diagrams.net" modified="2021-06-27T16:55:28.964Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="5AMrmTsAU65ma6y7qnyI" version="14.8.1" type="github">
   <diagram id="1waCIOAPiJmJpgNvdeaP" name="Page-1">
     <mxGraphModel dx="946" dy="522" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -9,7 +9,7 @@
             <mxPoint x="225" y="510" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="DgHiLCsCRtebuXbdOFPt-8" value="Set TX and RX to &lt;br&gt;Main Hub Address" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" parent="1" vertex="1">
+        <mxCell id="DgHiLCsCRtebuXbdOFPt-8" value="Set TX and RX to &lt;br&gt;Lock Request Pipe" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" parent="1" vertex="1">
           <mxGeometry x="135" y="380" width="180" height="80" as="geometry" />
         </mxCell>
         <mxCell id="DgHiLCsCRtebuXbdOFPt-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="DgHiLCsCRtebuXbdOFPt-13" target="DgHiLCsCRtebuXbdOFPt-8" edge="1">
@@ -67,7 +67,7 @@
         <mxCell id="DgHiLCsCRtebuXbdOFPt-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="DgHiLCsCRtebuXbdOFPt-38" target="DgHiLCsCRtebuXbdOFPt-42" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="DgHiLCsCRtebuXbdOFPt-38" value="Set TX and RX&lt;br&gt;to Pipe Address" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" parent="1" vertex="1">
+        <mxCell id="DgHiLCsCRtebuXbdOFPt-38" value="Set TX and RX&lt;br&gt;to Communication&lt;br&gt;Pipe" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" parent="1" vertex="1">
           <mxGeometry x="325" y="825" width="155" height="70" as="geometry" />
         </mxCell>
         <mxCell id="DgHiLCsCRtebuXbdOFPt-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="DgHiLCsCRtebuXbdOFPt-42" target="DgHiLCsCRtebuXbdOFPt-55" edge="1">
