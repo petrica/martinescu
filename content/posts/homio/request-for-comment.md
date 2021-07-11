@@ -21,7 +21,7 @@ Software and hardware intended to be used:
 * [Atmel AVR MCUs](https://en.wikipedia.org/wiki/AVR_microcontrollers) - cheap and widely used microcontrollers.
 * [nRF24](https://lastminuteengineers.com/nrf24l01-arduino-wireless-communication/) - cheap and reliable wireless communication chip.
 * [ESP8266/ESP32](https://www.espressif.com/en/products/socs/esp8266) - WiFi chip that is cheap and popular amongst DIYs engineers. 
-* [ESPHome](https://esphome.io/) - framework intended for ESP8266/ESP32 WiFi chips, that uses simple configuration files to generate the firmware for your device.
+* [ESPHome](https://esphome.io/) - framework intended for ESP8266/ESP32 WiFi chips that uses simple configuration files to generate the firmware for your device.
 * [NRFLite](https://github.com/dparson55/NRFLite) - probably the lites library for controlling nRF24 chips with only two pins.
 
 ## High Level Diagram
@@ -44,8 +44,8 @@ The architecture makes use of the already existing integration between ESPHome a
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;https://app.diagrams.net/#Hpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-hub.drawio&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/petrica/martinescu/master/static/diagrams/homio-hub.drawio&quot;}"></div>
 <script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-hub.drawio"></script>
 
-The hub as a central piece of the architecture will have two hardware modules that are used for wireless communication: nRF24 for low power wireless communication and the actual ESP WiFi module to connect the hub to Home Assistant.
-Sensors connected to the hub need to also have a representation at the hub level in order for them to be logically represented at the console level.
+The hub as a central piece of the architecture will have two hardware modules that are used for wireless communication: the nRF24 chip for low power wireless communication and the actual ESP WiFi module to connect the hub to Home Assistant.
+The diagram also depicts a logical representation of the child devices as sensors and components. Whenever a new child device starts, it will send a heartbeat signal to the Hub. This will register the device in the devices list connected to the Hub.
 
 ### Homio Component Diagram
 
@@ -79,32 +79,55 @@ For two chips to communicate, each chip must listen to an unique address that th
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;https://app.diagrams.net/#Hpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-two-nrf-diagram.drawio&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/petrica/martinescu/master/static/diagrams/homio-two-nrf-diagram.drawio&quot;}"></div>
 <script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-two-nrf-diagram.drawio"></script>
 
-Considering this simple scenario, **nRF Sender** will be configured having the transmission address set to 1 (TX: 1) and receiving address set to 1 as well (RX: 1), as the ACK packet will be sent back from **nRF Receiver** using it's listening address.
+Considering this simple scenario, **nRF Sender** will be configured having the transmission address set to 1 (TX: 1) and receiving address set to 1 as well (RX: 1). The **nRF Receiver** will listen on address 1 (RX: 1). **nRF Sender** will start
+emitting on address 1 a packet and immediately after that will switch to receive mode on address 1 to wait for the ACK packet from the **nRF Receiver**. As the **nRF Receiver** received the packet will use the same address 1 to send back the ACK packet.
 
-For the MultiCeiver situation, the **nRF Hub** will listen to multiple addresses (RX: 1, RX: 2 ... Rx: n) and will be able to send back an ACK packet on each individual address or pipe.
+The MultiCeiver receiver will have the possibility to listen to as many as 6 devices at one time. We will use this functionality to build the **nRF Hub** that will listen to multiple addresses (RX: 1, RX: 2 ... Rx: n) and will be able to send back an ACK packet on each individual address or pipe.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;https://app.diagrams.net/#Hpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-multi-nrf-diagram.drawio&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/petrica/martinescu/master/static/diagrams/homio-multi-nrf-diagram.drawio&quot;}"></div>
 <script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-multi-nrf-diagram.drawio"></script>
 
-When **nRF Hub** needs to initiate the communication, the situation described previously between two chips applies. The **nRF Hub** simply sets the TX address to one of the child nRF devices and
-one of the pipes to listen to the same TX address for the ACK packet. Usually the pipe with the 0 index is used for receiving ACK packets from children, leaving out 5 more pipes for active listening from 5 other devices.
+When we need the **nRF Hub** to first initiate the communication, the situation described previously between two chips applies. The **nRF Hub** simply sets the TX address to one of the child nRF devices address and
+one of the pipes to listen to the same TX address for the ACK packet. Usually the pipe with the 0 index is used for receiving ACK packets from children, leaving out actually 5 addresses available to listen to other devices, not 6.
 
 ## Homio Communication Protocol
 
 Considering our initial goal of having a large number of IoT devices communicating with the Hub and the fact that the nRF24 chip can only listen to 6 individual addresses at one time, we need to find an alternative communication protocol that
-can somehow satisfy our hypothesis. Knowing that the IoT devices will most of the time stay silent and rarely go back to the Hub to dump their data or receive updates from the Hub, then we are in a position of sharing the Hub communication pipes between multiple
-devices.
+can somehow satisfy our hypothesis. Knowing that the IoT devices will most of the time stay silent and rarely go back to the Hub to dump their data or receive updates from the Hub, then we are in a position of sharing the Hub communication pipes between multiple devices.
 
-### Requesting a Communication Pipe
+The protocol will be simple, we will use a similar approach used in programming where multiple threads need to secure access to 
+one resource. In principle a device that would like to send data back to the hub will have to first acquire a time bound lock 
+and then send the data. For this to work we will use two listening pipes on the hub:
+1. First pipe will be an open to all pipe. This pipe will wait for lock acquire requests from devices.
+2. Second pipe will be the exclusive communication pipe. This will be used by the child device to send data once the lock has been acquired.
 
-In order for a device to send data to the Homio Hub, it will need to ask the Hub for an available communication pipe address. To do this, we could use one main address of the Hub to listen to these specific requests.
-This means that multiple devices will use the same address to send their request packet to the Hub and get back the ACK packet containing the available pipe address that they can use to privately talk to the Hub.
+For this to work we will have to ensure that the child devices do not misbehave, such that no child device will use the second pipe for communication if the lock has not been acquired yet, or flood the first pipe with too many lock acquire requests.
+
+### 1. Sending data to the Hub
+
+In order for a device to send data to the Homio Hub, it will need to ask the Hub for a communication lock. To do this, we could use one pipe of the Hub to listen for these specific requests. This means that multiple devices will use the same pipe to send their request packet to the Hub. We will make use of the acknowledgement payload feature in order to send back to the child device the ACK packet containing the address of the exclusive pipe that they can use to privately talk to the Hub.
 With this approach there are a few issues. Let's see what those issues are and how we can mitigate them:
-* there is a good chance that the ACK packet will be received by all devices that sent the request for a communication pipe. This is because all devices are listening to the same address (main hub address) for the ACK packet.
-When this happens the Hub actually processed only one of the requests in the background, such that the ACK will contain the ID of the device that got the permission to talk to the Hub. The Hub acts as a referee.
-* there is a good change that packets might clash
+* there is a good chance that the ACK packet will be received by all devices that sent the request for a communication lock. This is because all devices are listening on the same pipe for the ACK packet. However the hub will grant the lock to only one device and the device ID will be included in the ACK packet payload. This will inform the child devices of who got the communication lock.
+* there is a good chance that packets might clash and nothing will get through to the Hub. This will be mitigated by the auto retransmission feature of the nRF24 protocol.
+* the lock might already be assigned to a different device, the device requesting the lock will have to wait for 100ms before re-requesting the lock. 100ms is the timeout of the lock.
+
+Here is a diagram of how the entire flow will look like. It starts with the lock request and then it follows with the actual data send.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;https://app.diagrams.net/#Hpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-pipe-request-diagram&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/petrica/martinescu/master/static/diagrams/homio-pipe-request-diagram&quot;}"></div>
 <script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-pipe-request-diagram"></script>
+
+Here is how the Hub will handle the lock request and the data receive. Please not that the ACK payload must be prepared before the device makes the request to the hub. The ACK payload is sent back automatically by the nRF24 chip upon receiving a packet from a device. We can only control the content of this ACK payload beforehand, that is why we are first buffering it.
+
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;resize&quot;:true,&quot;toolbar&quot;:&quot;zoom layers lightbox&quot;,&quot;edit&quot;:&quot;https://app.diagrams.net/?src=about#Hpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-hub-pipe-request-diagram&quot;,&quot;url&quot;:&quot;https://raw.githubusercontent.com/petrica/martinescu/master/static/diagrams/homio-hub-pipe-request-diagram&quot;}"></div>
+<script type="text/javascript" src="https://viewer.diagrams.net/embed2.js?&fetch=https%3A%2F%2Fraw.githubusercontent.com%2Fpetrica%2Fmartinescu%2Fmaster%2Fstatic%2Fdiagrams%2Fhomio-hub-pipe-request-diagram"></script>
+
+### 2. Sending Data to Components
+
+For the Hub to initiate the communication with other devices, it will have to temporary switch from receiving mode (RX) to transmitting mode (TX). While transmitting the Hub will be unable to receive any updates from the other devices, such that there is potentially a risk of data loss. To communicate with the other devices, the Hub will simply switch the TX address to point to one of the devices address and use the same address for the ACK packet send back by the child devices. To limit or mitigate the chance of a data loss while the Hub is transmitting, we can increase the length of the auto retransmission interval of the child device, such that one of the auto retried packets will reach the Hub.
+
+### Communication Packet
+
+
+
 
 
