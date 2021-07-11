@@ -1,7 +1,7 @@
 ---
-title: "Homio RFC Draft"
+title: "Homio RFC for Home Automation"
 date: 2021-06-07T00:05:48+03:00
-draft: true
+draft: false
 ---
 
 ![Homio Home Automation](/images/homio/homio.jpg)
@@ -127,7 +127,121 @@ For the Hub to initiate the communication with other devices, it will have to te
 
 ### Communication Packet
 
+As we would like to keep the size of the packet to a minimum, we are looking at binary serialising the data. The communication packet should be easy to serialise and deserialise. In order to properly deserialise the packet, the client muse know upfront the content type of the packet. On top of this, because we may have packets that will end up to multiple clients, we will need to also specify the recipient of the packet so the clients that receive a packet intended for someone else, they would know to ignore it.
 
+The structure of the packet could look like this:
+
+| Field | Type | Description
+|-------|------|-------------
+| commandType | enum | Identifies the structure of the payload expected |
+| fromAddress | uint8_t | Identifies the sender device |
+| toAddress | uint8_t | Identifies the recipient to whom the payload is intended to |
+| payload | uint8_t[] | The binary payload of the packet |
+
+### Command Types
+
+#### LOCK_REQUEST
+Command initiated by the client to request a lock for exclusive communication with the hub.
+
+**Body** - empty
+
+**Example**
+
+```yaml
+commandType: LOCK_REQUEST
+fromAddress: 10
+toAddress: 1
+```
+---
+
+#### LOCK_DELIVER
+Command initiated by the hub that informs the client of the lock request acquired by a specific client. Lock deliver will be used as an ACK payload. The device for which the lock is intended to is specified by the **toAddress**.
+
+**Body** - empty
+
+**Example**
+
+```yaml
+commandType: LOCK_DELIVER
+fromAddress: 1
+toAddress: 10
+```
+---
+#### HEARTBEAT
+Command initiated by the client to inform the hub of the liveness of the device.
+
+**Body** - empty
+
+**Example**
+```yaml
+commandType: HEARTBEAT
+fromAddress: 10
+toAddress: 1
+```
+---
+#### DATAPOINT_REPORT
+Command initiated by the client to report a specific metric recorded by the component or sensor.
+
+**Body**
+| Field | Type | Description
+|-------|------|-------------
+| id | Byte | The index of the datapoint to be reported (eg: 1, 2, 3)
+| type | Enum | RAW - variable length<br/>BOOLEAN - 1 byte<br/>INTEGER - 4 byes<br/>STRING - variable length<br/>ENUM - 1 byte<br/>BITMASK - 4 bytes
+| length | Byte | The size of the raw data
+| **valueBoolean** | bool | the boolean value if the datapoint type is BOOLEAN
+| **valueInt** | int | signed int value if the datapoint type is INTEGER
+| **valueUnsignedInt** | uint32_t | unsigned int value if the datapoint type is INTEGER
+| **valueEnum** | uint8_t | enum value if datapoint type is ENUM
+| **valueBitmask** | uint32_t | bitmask value if datapoint type is BITMASK
+| valueString | char[] | variable string value if datapoint type is STRING
+| valueRaw | uint8_t[] | binary data if datapoint type is RAW, the length is determined by the **length** attribute
+
+**\*bold attribute** - are in an union, such that the size of the value held by the union would be determined by the largest member of the union, 4 bytes in this case. See the [c++ union](https://en.cppreference.com/w/cpp/language/union).
+
+**Example**
+```yaml
+commandType: DATAPOINT_REPORT
+fromAddress: 10
+toAddress: 1
+payload:
+    id: 1
+    type: BOOLEAN
+    length: 0
+    valueBoolean: true
+```
+---
+#### DATAPOINT_DELIVER
+Command initiated by the hub to report back to the client a specific datapoint.
+
+**Body** - the same data structured used for [DATAPOINT_REPORT](#datapoint_report) command.
+
+**Example**
+```yaml
+commandType: DATAPOINT_DELIVER
+fromAddress: 1
+toAddress: 10
+payload:
+    id: 1
+    type: BOOLEAN
+    length: 0
+    valueBoolean: true
+```
+---
+#### CONFIRM
+Command initiated by the hub and used as an ACK payload to confirm that the packet received by the hub was expected to come from **toAddress**. This is going to be used by the client to asses that the command was indeed received and processed by the hub. If the **toAddress** is different from the one that the client has, the client should resort to replaying the packet.
+
+**Body** - empty
+
+**Example**
+```yaml
+commandType: CONFIRM
+fromAddress: 1
+toAddress: 10
+```
+
+## Conclusion
+
+Making use of the NRF24 wireless communication chip protocol we were able to create a custom protocol that can in theory accept thousands of devices to report back their data to a central hub. 
 
 
 
