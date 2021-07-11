@@ -127,7 +127,7 @@ For the Hub to initiate the communication with other devices, it will have to te
 
 ### Communication Packet
 
-As we would like to keep the size of the packet to a minimum, we are looking at binary serialising the data. The communication packet should be easy to serialise and deserialise. In order to properly deserialise the packet, the client muse know upfront the content type of the packet. On top of this, because we may have packets that will end up to multiple clients, we will need to also specify the recipient of the packet so the clients that receive a packet intended for someone else, they would know to ignore it.
+As we would like to keep the size of the packet to a minimum, we are looking to binary serialise the data. The communication packet should be easy to serialise and deserialise. In order to properly deserialise the packet, the client muse know upfront the content type of the packet. On top of this, because we may have packets that will end up to multiple clients, we will need to also specify the recipient of the packet, such that the clients will drop a packet that it is intended for someone else.
 
 The structure of the packet could look like this:
 
@@ -155,7 +155,7 @@ toAddress: 1
 ---
 
 #### LOCK_DELIVER
-Command initiated by the hub that informs the client of the lock request acquired by a specific client. Lock deliver will be used as an ACK payload. The device for which the lock is intended to is specified by the **toAddress**.
+Command initiated by the hub that informs the client of the lock request acquired by a specific client. The command will be used as an ACK payload. The device for which the lock is intended to is specified by the **toAddress** attribute.
 
 **Body** - empty
 
@@ -185,9 +185,9 @@ Command initiated by the client to report a specific metric recorded by the comp
 **Body**
 | Field | Type | Description
 |-------|------|-------------
-| id | Byte | The index of the datapoint to be reported (eg: 1, 2, 3)
+| id | uint8_t | The index of the datapoint to be reported (eg: 1, 2, 3)
 | type | Enum | RAW - variable length<br/>BOOLEAN - 1 byte<br/>INTEGER - 4 byes<br/>STRING - variable length<br/>ENUM - 1 byte<br/>BITMASK - 4 bytes
-| length | Byte | The size of the raw data
+| length | uint8_t | The size of the raw data
 | **valueBoolean** | bool | the boolean value if the datapoint type is BOOLEAN
 | **valueInt** | int | signed int value if the datapoint type is INTEGER
 | **valueUnsignedInt** | uint32_t | unsigned int value if the datapoint type is INTEGER
