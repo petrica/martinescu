@@ -239,9 +239,30 @@ fromAddress: 1
 toAddress: 10
 ```
 
+### Programatic APIs
+
+The programatic API should be simple, exposing only the bare minimum methods to complete the communication purposes. Coarse-grained perspective of the objects involved in the design might look like this:
+* **Device** - object that represents the client device
+* **Hub** - object that represent the hub
+* **HubDevice** - objects that represents the client devices connected to the hub
+
+**Device APIs**
+- **sendDatapoint(Datapoint &datapoint): void** - send datapoint to hub, every communication details are hidden behind the implementation of this method.
+- **hasDatapoint(): bool** - has the device received any updates from the hub? These updates can come either direct while the device is listening for data from hub, or indirect as part of the ACK payload.
+- **getDatapoint(Datapoint &datapoint)** - get the datapoint details sent by the hub. Once the data has been read the **hadDatapoint** will return false on the next call.
+- **tick(): void** - processing method that handles the async operations and communication processes.
+- **getLastSendStatus(): SendStatus** - get the last **sendDatapoint** communication status. This could could be model as an enum: PENDING, SENT, ERROR, etc
+
+**Hub APIs**
+- **getDeviceList(): HubDevice[]** - retrieves all the connected devices to the hub.
+- **HubDevice:sendDatapoint(Datapoint &datapoint): void** - send datapoint back to the client device, again depending on the configuration of the device, this could be sent directly or as part of the ACK payload.
+- **HubDevice:hasDatapoint(): bool** - have we received any updates from the device?
+- **HubDevice:getDatapoint(Datapoint &datapoint): void** - get the received datapoint for a specific device.
+- **HubDevice:getLastSendStatus(): SendStatus** - get the **sendDatapoint** communication status. Similar to the device method this will return an enum about the last packet that has been sent.
+- **tick(): void** - processing method that handles all the async processes.
+
 ## Conclusion
 
 Making use of the NRF24 wireless communication chip protocol we were able to create a custom protocol that can in theory accept thousands of devices to report back their data to a central hub. 
-
 
 
